@@ -1,103 +1,94 @@
+"use client";
 import Image from "next/image";
+import { useEffect, useState } from "react";
+import FilterTabs from "@/components/filterTabs";
+import Scroll from "@/components/scrollComponent";
+import Searchbar from "../components/searchBar";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [selectedType, setSelectedType] = useState("");
+  const [typeOptions, setTypeOptions] = useState<{ label: string; value: string }[]>([]);
+  const [abilityOptions, setAbilityOptions] = useState<{ label: string; value: string }[]>([]);
+  const [selectedAbility, setSelectedAbility] = useState("");
+  const [searchText, setSearchText] = useState("");
+  const [committedQuery, setCommittedQuery] = useState("");
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchText(e.target.value);
+  };
+
+  const handleSearch = () => {
+    setCommittedQuery(searchText);
+  };
+
+  const handleTypeChange = (value: string) => {
+    setSelectedType((prev) => (prev === value ? "" : value));
+  };
+
+  const handleAbilityChange = (value: string) => {
+    setSelectedAbility((prev) => (prev === value ? "" : value));
+  };
+
+  useEffect(() => {
+    const fetchTypes = async () => {
+      const response = await fetch("https://pokeapi.co/api/v2/type");
+      const data = await response.json();
+      const options = data.results.map((type: { name: string }) => ({
+        label: type.name,
+        value: type.name,
+      }));
+      setTypeOptions([{ label: "All", value: "" }, ...options]);
+    };
+
+    const fetchAbilities = async () => {
+      const response = await fetch("https://pokeapi.co/api/v2/ability");
+      const data = await response.json();
+      const options = data.results.map((type: { name: string }) => ({
+        label: type.name,
+        value: type.name,
+      }));
+      setAbilityOptions([{ label: "All", value: "" }, ...options]);
+    };
+
+    fetchAbilities();
+    fetchTypes();
+  }, []);
+
+  return (
+    <div className="flex flex-col items-center">
+      <div className="w-full bg-gradient-to-b from-yellow-500 to-white py-5 flex flex-col items-center">
+        <Image
+          src="https://raw.githubusercontent.com/sleduardo20/pokedex/0671af442dff1d8f7141e49eb83b438885bbc9e9/public/img/logo.svg"
+          alt="pokedex text"
+          height={300}
+          width={300}
+          className="mb-4"
+        />
+        <Searchbar value={searchText} onChange={handleInputChange} onSearch={handleSearch} />
+
+        <div className="bg-white mt-6 rounded-xl px-6 py-4 w-full max-w-5xl overflow-x-auto">
+          <div className="mb-4">
+            <p className="text-yellow-500 font-bold text-lg mb-2">Type:</p>
+            <FilterTabs
+              options={typeOptions}
+              selectedFilter={selectedType}
+              onFilterChange={handleTypeChange}
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+          </div>
+          <div>
+            <p className="text-yellow-500 font-bold text-lg mb-2">Ability:</p>
+            <FilterTabs
+              options={abilityOptions}
+              selectedFilter={selectedAbility}
+              onFilterChange={handleAbilityChange}
+            />
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+
+      <div className="max-w-6xl w-full py-20">
+        <Scroll selectedType={selectedType} selectedAbility={selectedAbility} searchQuery={committedQuery} />
+      </div>
     </div>
+      </div>
   );
 }
