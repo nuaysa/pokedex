@@ -1,4 +1,4 @@
-import { EvolutionChain, PokemonEvo, PokemonStat } from "@/types/types";
+import { EvolutionChain, PokemonEvo} from "@/types/types";
 
 const BASE_URL = "https://pokeapi.co/api/v2";
 
@@ -49,8 +49,8 @@ export const fetchPokemonDetails = async (limit = 20, offset = 0, selectedType?:
     const types = detail.types.map((t:{ type: { name: string } }) => t.type.name);
     const abilities = detail.abilities.map((a: { ability: { name: string } }) => a.ability.name);
   
-    const stats = detail.stats.map((s:PokemonStat) => ({
-      name: s.name,
+    const stats = detail.stats.map((s: { base_stat: number; stat: { name: string } }) => ({
+      name: s.stat.name,
       base_stat: s.base_stat,
     }));
   

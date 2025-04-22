@@ -1,7 +1,8 @@
 "use client";
 import { typeColors } from "@/helpers/color";
 import { PokemonDetails, PokemonEvo, PokemonStat } from "@/types/types";
-import { Dialog, DialogContent, DialogTitle } from "@mui/material";
+import { Dialog, DialogContent, DialogTitle, IconButton } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 import Image from "next/image";
 
 interface Props {
@@ -15,7 +16,11 @@ export default function PokemonDetailModal({ isOpen, onClose, pokemon }: Props) 
 
   return (
     <Dialog open={isOpen} onClose={onClose}>
-      <DialogContent className="max-w-xl">
+      <DialogContent className="max-w-xl relative">
+        <IconButton onClick={onClose} className="absolute top-3 left-2">
+          <CloseIcon />
+        </IconButton>
+
         <DialogTitle className="text-xl font-bold text-center">
           #{pokemon.id} {pokemon.name}
         </DialogTitle>
@@ -25,39 +30,47 @@ export default function PokemonDetailModal({ isOpen, onClose, pokemon }: Props) 
           <p className="text-sm text-gray-500 text-center max-w-sm">{pokemon.description}</p>
 
           <div className="flex gap-2">
-            {pokemon.types.map((type: string) => (
-             <span key={type} className={`text-white px-2 py-1 rounded-full text-xs ${typeColors[type]}`}>
-             {type}
-           </span>
+            {pokemon.types.map((type) => (
+              <span
+              key={type}
+              className={`text-black px-2 py-1 rounded-full text-sm border`}
+              style={{ backgroundColor: typeColors[type] || "#666" }}
+            >
+              {type}
+            </span>
+            
             ))}
           </div>
 
-          <div className="grid grid-cols-2 w-full text-sm mt-4">
-            <div>
-              <p>
-                <strong>Height:</strong> {pokemon.height}
-              </p>
-              <p>
-                <strong>Weight:</strong> {pokemon.weight}
-              </p>
-              <p>
-                <strong>Habitat:</strong> {pokemon.habitat}
-              </p>
+          <div className="grid grid-cols-2 gap-x-4 text-sm mt-3 border p-3 rounded-lg">
+            <div className="space-y-1">
+              {[
+                { label: "Height", value: pokemon.height },
+                { label: "Weight", value: pokemon.weight },
+                { label: "Habitat", value: pokemon.habitat },
+              ].map((item) => (
+                <div key={item.label} className="grid grid-cols-[80px_auto]">
+                  <span className="font-semibold">{item.label}</span>
+                  <span>: {item.value}</span>
+                </div>
+              ))}
             </div>
-            <div>
-              <p>
-                <strong>Abilities:</strong> {pokemon.abilities.join(", ")}
-              </p>
-              <p>
-                <strong>Color:</strong> {pokemon.color}
-              </p>
-              <p>
-                <strong>Shape:</strong> {pokemon.shape}
-              </p>
+
+            <div className="space-y-1">
+              {[
+                { label: "Abilities", value: pokemon.abilities.join(", ") },
+                { label: "Color", value: pokemon.color },
+                { label: "Shape", value: pokemon.shape },
+              ].map((item) => (
+                <div key={item.label} className="grid grid-cols-[80px_auto]">
+                  <span className="font-semibold">{item.label}</span>
+                  <span>: {item.value}</span>
+                </div>
+              ))}
             </div>
           </div>
 
-          <div className="w-full mt-4">
+          <div className="w-full mt-4 border p-3 rounded-lg">
             <p className="font-semibold text-center mb-2">Stats</p>
             <div className="space-y-1">
               {pokemon.stats.map((s: PokemonStat) => (
@@ -70,9 +83,9 @@ export default function PokemonDetailModal({ isOpen, onClose, pokemon }: Props) 
           </div>
 
           {pokemon.evolutions?.length > 0 && (
-            <div className="w-full mt-4">
+            <div className="w-full mt-4 border p-3 rounded-lg">
               <p className="font-semibold text-center mb-2">Evolutions</p>
-              <div className="flex justify-center gap-7">
+              <div className="flex justify-center gap-7 flex-wrap">
                 {pokemon.evolutions.map((evo: PokemonEvo) => (
                   <div key={evo.id} className="flex flex-col items-center">
                     <Image src={evo.image} alt={evo.name} width={60} height={60} />

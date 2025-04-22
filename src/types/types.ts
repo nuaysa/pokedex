@@ -23,8 +23,8 @@ export interface PokemonDetails {
 }
 
 export interface PokemonStat {
-  name: string;
   base_stat: number;
+   name: string 
 }
 
 export interface PokemonEvo {
