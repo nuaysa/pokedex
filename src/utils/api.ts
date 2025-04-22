@@ -1,3 +1,5 @@
+import { EvolutionChain, PokemonEvo, PokemonStat } from "@/types/types";
+
 const BASE_URL = "https://pokeapi.co/api/v2";
 
 export const fetchPokemonDetails = async (limit = 20, offset = 0, selectedType?: string, selectedAbility?: string) => {
@@ -8,8 +10,8 @@ export const fetchPokemonDetails = async (limit = 20, offset = 0, selectedType?:
       const res = await fetch(pokemon.url);
       const detail = await res.json();
   
-      const types = detail.types.map((t: any) => t.type.name);
-      const abilities = detail.abilities.map((a: any) => a.ability.name);
+      const types = detail.types.map((t:{ type: { name: string } }) => t.type.name);
+      const abilities = detail.abilities.map((a: { ability: { name: string } }) => a.ability.name);
   
       return {
         id: detail.id,
@@ -44,28 +46,28 @@ export const fetchPokemonDetails = async (limit = 20, offset = 0, selectedType?:
     const evolutionRes = await fetch(speciesData.evolution_chain.url);
     const evolutionData = await evolutionRes.json();
   
-    const types = detail.types.map((t: any) => t.type.name);
-    const abilities = detail.abilities.map((a: any) => a.ability.name);
+    const types = detail.types.map((t:{ type: { name: string } }) => t.type.name);
+    const abilities = detail.abilities.map((a: { ability: { name: string } }) => a.ability.name);
   
-    const stats = detail.stats.map((s: any) => ({
-      name: s.stat.name,
+    const stats = detail.stats.map((s:PokemonStat) => ({
+      name: s.name,
       base_stat: s.base_stat,
     }));
   
     const descriptionEntry = speciesData.flavor_text_entries.find(
-      (entry: any) => entry.language.name === "en"
+      (entry: { language: { name: string }; flavor_text: string }) => entry.language.name === "en"
     );
   
     const description = descriptionEntry ? descriptionEntry.flavor_text.replace(/\f|\n/g, ' ') : "No description available.";
   
-    const evolutions: any[] = [];
+    const evolutions: PokemonEvo[] = [];
   
-    const traverseEvolutions = (evoData: any) => {
+    const traverseEvolutions = (evoData: EvolutionChain) => {
       if (!evoData) return;
       const evoName = evoData.species.name;
       const evoId = evoData.species.url.split("/").filter(Boolean).pop();
       const image = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${evoId}.png`;
-      evolutions.push({ id: evoId, name: evoName, image });
+      evolutions.push({ id: +evoId!, name: evoName, image });
       if (evoData.evolves_to.length > 0) {
         traverseEvolutions(evoData.evolves_to[0]);
       }

@@ -1,5 +1,6 @@
 import { typeColors } from "@/helpers/color";
 import { Pokemon } from "@/types/types";
+import Image from "next/image";
 
 export default function PokeCard({ name, image, id, types, onClick}: Pokemon) {
   const type = types[0];
@@ -13,7 +14,7 @@ export default function PokeCard({ name, image, id, types, onClick}: Pokemon) {
   >
     <div className="rounded-2xl shadow-md p-4 text-center relative transition-transform hover:scale-105 bg-white" >
       <span className="absolute top-2 right-2 text-sm font-semibold text-gray-600">#{id}</span>
-      <img src={image} alt={name} className="w-24 h-24 mx-auto" />
+      <Image src={image} alt={name} height={100} width={100} className="w-24 h-24 mx-auto" />
       <h2 className="text-xl font-bold capitalize mt-2">{name}</h2>
       <div className="flex justify-center gap-2 mt-2 flex-wrap">
         {types.map((t) => (

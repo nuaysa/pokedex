@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 
 interface SearchbarProps {
   value: string;
-  onChange: (e: any) => void;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onSearch: () => void;
 }
 

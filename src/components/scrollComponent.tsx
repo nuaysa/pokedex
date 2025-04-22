@@ -14,8 +14,8 @@ interface ScrollProps {
 }
 
 export default function Scroll({ selectedType, selectedAbility, searchQuery }: ScrollProps) {
-  const [allPokemons, setAllPokemons] = useState<any[]>([]);
-  const [displayedPokemons, setDisplayedPokemons] = useState<any[]>([]);
+  const [allPokemons, setAllPokemons] = useState<PokemonDetails[]>([]);
+  const [displayedPokemons, setDisplayedPokemons] = useState<PokemonDetails[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [offset, setOffset] = useState(0);
   const [selectedPokemon, setSelectedPokemon] = useState<PokemonDetails | null>(null);
@@ -37,6 +37,7 @@ export default function Scroll({ selectedType, selectedAbility, searchQuery }: S
     setOffset((prev) => prev + LIMIT);
     if (newData.length < LIMIT) setHasMore(false);
   };
+  
   useEffect(() => {
     const fetchAllPokemonNames = async () => {
       const res = await fetch("https://pokeapi.co/api/v2/pokemon?limit=1000");

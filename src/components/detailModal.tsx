@@ -1,7 +1,6 @@
-// components/PokemonDetailModal.tsx
 "use client";
 import { typeColors } from "@/helpers/color";
-import { PokemonDetails } from "@/types/types";
+import { PokemonDetails, PokemonEvo, PokemonStat } from "@/types/types";
 import { Dialog, DialogContent, DialogTitle } from "@mui/material";
 import Image from "next/image";
 
@@ -61,7 +60,7 @@ export default function PokemonDetailModal({ isOpen, onClose, pokemon }: Props) 
           <div className="w-full mt-4">
             <p className="font-semibold text-center mb-2">Stats</p>
             <div className="space-y-1">
-              {pokemon.stats.map((s: any) => (
+              {pokemon.stats.map((s: PokemonStat) => (
                 <div key={s.name} className="flex justify-between text-sm">
                   <span>{s.name}</span>
                   <span>{s.base_stat}</span>
@@ -74,7 +73,7 @@ export default function PokemonDetailModal({ isOpen, onClose, pokemon }: Props) 
             <div className="w-full mt-4">
               <p className="font-semibold text-center mb-2">Evolutions</p>
               <div className="flex justify-center gap-7">
-                {pokemon.evolutions.map((evo: any) => (
+                {pokemon.evolutions.map((evo: PokemonEvo) => (
                   <div key={evo.id} className="flex flex-col items-center">
                     <Image src={evo.image} alt={evo.name} width={60} height={60} />
                     <p className="text-sm font-medium">
